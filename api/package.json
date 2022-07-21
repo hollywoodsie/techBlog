@@ -1,0 +1,19 @@
+{
+  "name": "tech-blog-api",
+  "version": "1.0.0",
+  "description": "Simple tech-blog api",
+  "main": "index.js",
+  "scripts": {
+    "start": "(set NODE_ENV=production) & node index.js",
+    "dev": "(set NODE_ENV=development) & nodemon index.js"
+  },
+  "author": "hollywoodsie",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
