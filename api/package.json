@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Simple tech-blog api",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "(set NODE_ENV=production) & node index.js",
     "dev": "(set NODE_ENV=development) & nodemon index.js"
