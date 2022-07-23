@@ -1,24 +1,35 @@
-import UserModel from '../models/user.model.js';
+import { createUser, loginUser, getUser } from '../services/user.service.js';
+import { validationResult } from 'express-validator';
 
-const register = async (req, res) => {
+export const register = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(400).json(errors.array());
   }
-
-  const password = req.body.password;
-  const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash(password, salt);
-
-  const doc = new UserModel({
-    email: req.body.email,
-    fullName: req.body.fullName,
-    avatarUrl: req.body.avatarUrl,
-    passwordHash,
-  });
-
-  const user = await doc.save();
-
-  res.json(user);
+  try {
+    const newUser = await createUser(req, res);
+    res.status(200).json({ status: 200, ...newUser, message: 'Success' });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: 'Registration failed' });
+  }
+};
+export const login = async (req, res, next) => {
+  try {
+    const loggedUser = await loginUser(req, res);
+    res.status(200).json({ status: 200, ...loggedUser, message: 'Success' });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: 'Login Failed' });
+  }
+};
+export const getMe = async (req, res, next) => {
+  try {
+    const me = await getUser(req, res);
+    res.status(200).json({ status: 200, ...me, message: 'Success' });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: 'Not authorized' });
+  }
 };
