@@ -27,9 +27,9 @@ export const getOne = async (req, res, next) => {
   try {
     const onePost = await getOnePost(req, res);
 
-    res.status(200).json({ status: 200, onePost, message: 'Success' });
+    res.status(200).json({ status: 200, data: onePost, message: 'Success' });
   } catch (error) {
     console.log(error);
-    res.status(404).json({ message: 'No article found(cont)' });
+    res.status(404).json({ message: 'No article found' });
   }
 };
