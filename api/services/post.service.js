@@ -1,4 +1,3 @@
-import { text } from 'express';
 import PostModel from '../models/post.model.js';
 
 export const createPost = async (req, res) => {
@@ -11,9 +10,7 @@ export const createPost = async (req, res) => {
       user: req.userId,
     });
 
-    const post = await doc.save();
-
-    return post;
+    return await doc.save();
   } catch (error) {
     throw Error(error);
   }
@@ -21,9 +18,7 @@ export const createPost = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate('user').exec();
-
-    return posts;
+    return await PostModel.find().populate('user');
   } catch (error) {
     throw Error(error);
   }
@@ -32,25 +27,16 @@ export const getAllPosts = async (req, res) => {
 export const getOnePost = async (req, res) => {
   try {
     const postId = req.params.id;
-    PostModel.findOneAndUpdate(
+    return PostModel.findOneAndUpdate(
       {
         _id: postId,
       },
       {
         $inc: { viewsCount: 1 },
       },
+
       {
         returnDocument: 'after',
-      },
-      (err, doc) => {
-        if (err) {
-          throw Error(err);
-        }
-        if (!doc) {
-          throw Error('No article found');
-        }
-        console.log(doc);
-        return doc;
       }
     ).populate('user');
   } catch (error) {
