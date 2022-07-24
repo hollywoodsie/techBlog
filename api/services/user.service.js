@@ -1,7 +1,6 @@
 import UserModel from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { ResultWithContext } from 'express-validator/src/chain/context-runner-impl.js';
 
 export const createUser = async (req, res) => {
   try {
