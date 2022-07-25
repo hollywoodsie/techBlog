@@ -11,12 +11,12 @@ export const checkAuth = (req, res, next) => {
       next();
     } catch (e) {
       return res.status(403).json({
-        message: 'Not authorized',
+        message: 'You have no permissions',
       });
     }
   } else {
     return res.status(403).json({
-      message: 'Not authorized',
+      message: 'Error(checkAuth)',
     });
   }
 };
