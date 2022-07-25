@@ -43,3 +43,34 @@ export const getOnePost = async (req, res) => {
     throw Error(error);
   }
 };
+
+export const removePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    return await PostModel.findOneAndDelete({
+      _id: postId,
+    });
+  } catch (error) {
+    throw Error(error);
+  }
+};
+
+export const updatePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    return await PostModel.updateOne(
+      {
+        _id: postId,
+      },
+      {
+        title: req.body.title,
+        text: req.body.text,
+        imageUrl: req.body.imageUrl,
+        tags: req.body.tags,
+        user: req.userId,
+      }
+    );
+  } catch (error) {
+    throw Error(error);
+  }
+};
