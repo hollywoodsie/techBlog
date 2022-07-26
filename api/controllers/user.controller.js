@@ -1,12 +1,6 @@
 import { createUser, loginUser, getUser } from '../services/user.service.js';
-import { validationResult } from 'express-validator';
 
 export const register = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json(errors.array());
-  }
   try {
     const newUser = await createUser(req, res);
     res.status(200).json({ status: 200, ...newUser, message: 'Success' });
