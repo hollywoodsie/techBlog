@@ -4,28 +4,42 @@ import {
   registerValidation,
 } from '../validators/auth.validation.js';
 import { postCreateValidation } from '../validators/post.validation.js';
-import { register, login, getMe } from '../controllers/user.controller.js';
-import { checkAuth } from '../middleware/checkAuth.js';
-import {
-  create,
-  getAll,
-  getOne,
-  remove,
-  update,
-} from '../controllers/post.controller.js';
+import { checkAuth, validationErrorsHandler } from '../middleware/index.js';
+import { UserController, PostController } from '../controllers/index.js';
 
 const router = express.Router();
 
 //user routes
-router.post('/auth/register', registerValidation, register);
-router.post('/auth/login', loginValidation, login);
-router.get('/auth/me', checkAuth, getMe);
+router.post(
+  '/auth/register',
+  registerValidation,
+  validationErrorsHandler,
+  UserController.register
+);
+router.post(
+  '/auth/login',
+  loginValidation,
+  validationErrorsHandler,
+  UserController.login
+);
+router.get('/auth/me', checkAuth, UserController.getMe);
 
 //post routes
-router.get('/posts', getAll);
-router.get('/posts/:id', getOne);
-router.post('/posts', checkAuth, postCreateValidation, create);
-router.patch('/posts/:id', checkAuth, update);
-router.delete('/posts/:id', checkAuth, remove);
+router.get('/posts', PostController.getAll);
+router.get('/posts/:id', PostController.getOne);
+router.post(
+  '/posts',
+  checkAuth,
+  postCreateValidation,
+  validationErrorsHandler,
+  PostController.create
+);
+router.patch(
+  '/posts/:id',
+  checkAuth,
+  validationErrorsHandler,
+  PostController.update
+);
+router.delete('/posts/:id', checkAuth, PostController.remove);
 
 export default router;
