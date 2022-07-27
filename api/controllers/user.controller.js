@@ -1,8 +1,8 @@
-import { createUser, loginUser, getUser } from '../services/user.service.js';
+import { UserService } from '../services/index.js';
 
 export const register = async (req, res, next) => {
   try {
-    const newUser = await createUser(req, res);
+    const newUser = await UserService.createUser(req, res);
     res.status(200).json({ status: 200, ...newUser, message: 'Success' });
   } catch (error) {
     console.log(error);
@@ -11,7 +11,7 @@ export const register = async (req, res, next) => {
 };
 export const login = async (req, res, next) => {
   try {
-    const loggedUser = await loginUser(req, res);
+    const loggedUser = await UserService.loginUser(req, res);
     res.status(200).json({ status: 200, ...loggedUser, message: 'Success' });
   } catch (error) {
     console.log(error);
@@ -20,7 +20,7 @@ export const login = async (req, res, next) => {
 };
 export const getMe = async (req, res, next) => {
   try {
-    const me = await getUser(req, res);
+    const me = await UserService.getUser(req, res);
     res.status(200).json({ status: 200, ...me, message: 'Success' });
   } catch (error) {
     console.log(error);

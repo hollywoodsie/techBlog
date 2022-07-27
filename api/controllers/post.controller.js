@@ -1,14 +1,8 @@
-import {
-  createPost,
-  getAllPosts,
-  getOnePost,
-  removePost,
-  updatePost,
-} from '../services/post.service.js';
+import { PostService } from '../services/index.js';
 
 export const create = async (req, res, next) => {
   try {
-    const newPost = await createPost(req, res);
+    const newPost = await PostService.createPost(req, res);
     res.status(200).json({ status: 200, data: newPost, message: 'Success' });
   } catch (error) {
     console.log(error);
@@ -18,7 +12,7 @@ export const create = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
   try {
-    const allPosts = await getAllPosts(req, res);
+    const allPosts = await PostService.getAllPosts(req, res);
     res.status(200).json({ status: 200, data: allPosts, message: 'Success' });
   } catch (error) {
     console.log(error);
@@ -28,7 +22,7 @@ export const getAll = async (req, res, next) => {
 
 export const getOne = async (req, res, next) => {
   try {
-    const onePost = await getOnePost(req, res);
+    const onePost = await PostService.getOnePost(req, res);
     !onePost
       ? res.status(404).json({ status: 404, message: 'Article not found' })
       : res
@@ -42,7 +36,7 @@ export const getOne = async (req, res, next) => {
 
 export const remove = async (req, res, next) => {
   try {
-    const removedPost = await removePost(req, res);
+    const removedPost = await PostService.removePost(req, res);
     !removedPost
       ? res.status(404).json({
           status: 404,
@@ -62,7 +56,7 @@ export const remove = async (req, res, next) => {
 
 export const update = async (req, res, next) => {
   try {
-    const updatedPost = await updatePost(req, res);
+    const updatedPost = await PostService.updatePost(req, res);
     !updatedPost
       ? res.status(404).json({
           status: 404,
@@ -77,5 +71,20 @@ export const update = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Error while article updating' });
+  }
+};
+
+export const getTags = async (req, res, next) => {
+  try {
+    const tags = await PostService.getAllTags(req, res);
+
+    res.status(200).json({
+      status: 200,
+      data: tags,
+      message: 'Success',
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error while getting tags' });
   }
 };
