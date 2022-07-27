@@ -74,3 +74,14 @@ export const updatePost = async (req, res) => {
     throw Error(error);
   }
 };
+export const getAllTags = async (req, res) => {
+  try {
+    const posts = await PostModel.find().limit(5);
+    return posts
+      .map((obj) => obj.tags)
+      .flat()
+      .slice(0, 5);
+  } catch (error) {
+    throw Error(error);
+  }
+};
