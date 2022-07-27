@@ -41,5 +41,5 @@ router.patch(
   PostController.update
 );
 router.delete('/posts/:id', checkAuth, PostController.remove);
-
+router.get('/tags', PostController.getTags);
 export default router;
