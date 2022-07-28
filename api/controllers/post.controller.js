@@ -2,46 +2,45 @@ import { PostService } from '../services/index.js';
 
 export const create = async (req, res, next) => {
   try {
-    const newPost = await PostService.createPost(req, res);
+    const newPost = await PostService.createPost(req.body);
     res.status(200).json({ status: 200, data: newPost, message: 'Success' });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Error while post creation' });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const getAll = async (req, res, next) => {
   try {
-    const allPosts = await PostService.getAllPosts(req, res);
+    const allPosts = await PostService.getAllPosts();
     res.status(200).json({ status: 200, data: allPosts, message: 'Success' });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'No articles found' });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const getOne = async (req, res, next) => {
   try {
-    const onePost = await PostService.getOnePost(req, res);
+    const onePost = await PostService.getOnePost(req.params);
     !onePost
-      ? res.status(404).json({ status: 404, message: 'Article not found' })
+      ? res
+          .status(404)
+          .json({ status: 404, data: onePost, message: 'Article not found' })
       : res
           .status(200)
           .json({ status: 200, data: onePost, message: 'Success' });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Error while getting post' });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const remove = async (req, res, next) => {
   try {
-    const removedPost = await PostService.removePost(req, res);
+    const removedPost = await PostService.removePost(req.params);
     !removedPost
       ? res.status(404).json({
           status: 404,
           deleted: false,
-          message: 'Article not found',
+          message: 'Post not found',
         })
       : res.status(200).json({
           status: 200,
@@ -50,17 +49,17 @@ export const remove = async (req, res, next) => {
         });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Error while article removing' });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const update = async (req, res, next) => {
   try {
-    const updatedPost = await PostService.updatePost(req, res);
+    const updatedPost = await PostService.updatePost(req);
     !updatedPost
       ? res.status(404).json({
           status: 404,
-          deleted: false,
+          updated: false,
           message: 'Article not found',
         })
       : res.status(200).json({
@@ -70,13 +69,13 @@ export const update = async (req, res, next) => {
         });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Error while article updating' });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const getTags = async (req, res, next) => {
   try {
-    const tags = await PostService.getAllTags(req, res);
+    const tags = await PostService.getAllTags();
 
     res.status(200).json({
       status: 200,
@@ -85,6 +84,6 @@ export const getTags = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: 'Error while getting tags' });
+    res.status(500).json({ message: error.message });
   }
 };
