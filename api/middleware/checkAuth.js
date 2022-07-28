@@ -10,12 +10,12 @@ export const checkAuth = (req, res, next) => {
       req.userId = decoded._id;
       next();
     } catch (e) {
-      return res.status(403).json({
+      return res.status(401).json({
         message: 'You have no permissions',
       });
     }
   } else {
-    return res.status(403).json({
+    return res.status(400).json({
       message: 'Error(checkAuth)',
     });
   }
