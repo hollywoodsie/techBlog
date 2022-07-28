@@ -2,18 +2,23 @@ import UserModel from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-export const createUser = async (req, res) => {
+export const createUser = async (data) => {
   try {
-    const password = req.body.password;
+    const password = data.password;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
     const doc = new UserModel({
-      email: req.body.email,
-      fullName: req.body.fullName,
-      avatarUrl: req.body.avatarUrl,
+      email: data.email,
+      fullName: data.fullName,
+      avatarUrl: data.avatarUrl,
       passwordHash: hash,
     });
+
+    const alreadyExists = await UserModel.findOne({ email: data.email });
+    if (alreadyExists) {
+      throw Error('User with this e-mail already exists');
+    }
 
     const user = await doc.save();
 
@@ -29,25 +34,21 @@ export const createUser = async (req, res) => {
     const { passwordHash, ...userData } = user._doc;
     return { userData, token };
   } catch (error) {
-    throw Error(error);
+    console.log(error);
+    throw Error('Error while creating user');
   }
 };
 
-export const loginUser = async (req, res) => {
+export const loginUser = async (data) => {
   try {
-    const user = await UserModel.findOne({ email: req.body.email });
+    const user = await UserModel.findOne({ email: data.email });
 
-    if (!user) {
-      throw Error('No users with this data');
-    }
-
-    const isValidPass = await bcrypt.compare(
-      req.body.password,
-      user._doc.passwordHash
-    );
+    const isValidPass = user
+      ? await bcrypt.compare(data.password, user._doc.passwordHash)
+      : null;
 
     if (!isValidPass) {
-      throw Error('Invalid password');
+      throw Error('Invalid e-mail or password');
     }
 
     const token = jwt.sign(
@@ -62,21 +63,19 @@ export const loginUser = async (req, res) => {
     const { passwordHash, ...userData } = user._doc;
     return { userData, token };
   } catch (error) {
+    console.log(error);
     throw Error(error);
   }
 };
 
-export const getUser = async (req, res) => {
+export const getUser = async (data) => {
   try {
-    const user = await UserModel.findById(req.userId);
-
-    if (!user) {
-      throw Error('No users with this data');
-    }
+    const user = await UserModel.findById(data.userId);
     const { passwordHash, ...userData } = user._doc;
 
     return userData;
   } catch (error) {
-    throw Error(error);
+    console.log(error);
+    throw Error('Error while getting user');
   }
 };
