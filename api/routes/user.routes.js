@@ -1,8 +1,5 @@
 import express from 'express';
-import {
-  loginValidation,
-  registerValidation,
-} from '../validators/auth.validation.js';
+import { registerValidation } from '../validators/auth.validation.js';
 import { postCreateValidation } from '../validators/post.validation.js';
 import { checkAuth, validationErrorsHandler } from '../middleware/index.js';
 import { UserController, PostController } from '../controllers/index.js';
@@ -18,7 +15,7 @@ router.post(
 );
 router.post(
   '/auth/login',
-  loginValidation,
+
   validationErrorsHandler,
   UserController.login
 );
