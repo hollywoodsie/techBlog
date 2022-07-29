@@ -3,10 +3,10 @@ import PostModel from '../models/post.model.js';
 export const createPost = async (data) => {
   try {
     const doc = new PostModel({
-      title: data.title,
-      text: data.text,
-      imageUrl: data.imageUrl,
-      tags: data.tags,
+      title: data.body.title,
+      text: data.body.text,
+      imageUrl: data.body.imageUrl,
+      tags: data.body.tags,
       user: data.userId,
     });
 
