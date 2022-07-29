@@ -1,8 +1,13 @@
-import express from 'express';
+import express, { application } from 'express';
 import { registerValidation } from '../validators/auth.validation.js';
 import { postCreateValidation } from '../validators/post.validation.js';
 import { checkAuth, validationErrorsHandler } from '../middleware/index.js';
-import { UserController, PostController } from '../controllers/index.js';
+import {
+  UserController,
+  PostController,
+  ImagesController,
+} from '../controllers/index.js';
+import { upload } from '../middleware/uploadImages.js';
 
 const router = express.Router();
 
@@ -39,4 +44,15 @@ router.patch(
 );
 router.delete('/posts/:id', checkAuth, PostController.remove);
 router.get('/tags', PostController.getTags);
+//images
+router.post(
+  '/images',
+  upload.single('image'),
+  ImagesController.uploadImageToCloud
+);
+
+router.get('/images/:key', ImagesController.getImageFromCloud);
+
+router.delete('/images/:key', ImagesController.deleteImageFromCloud);
+
 export default router;
