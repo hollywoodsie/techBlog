@@ -39,8 +39,8 @@ export async function getObjectSignedUrl(key) {
 
     // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
     const command = new GetObjectCommand(params);
-    const seconds = 3600;
-    const url = await getSignedUrl(client, command);
+    const seconds = 2678400;
+    const url = await getSignedUrl(client, command, { seconds });
 
     return url;
   } catch (error) {
