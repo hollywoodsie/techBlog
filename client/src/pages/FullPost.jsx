@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Post } from '../components/Post';
 import { Index } from '../components/AddComment';
 import { CommentsBlock } from '../components/CommentsBlock';
-import axios from '../redux/axios';
+import axios from '../axios';
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
@@ -14,7 +14,7 @@ export const FullPost = () => {
     axios
       .get(`/posts/${id}`)
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
         setLoading(false);
       })
       .catch((error) => {
