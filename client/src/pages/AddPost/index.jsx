@@ -7,9 +7,10 @@ import { selectIsAuth } from '../../redux/slices/auth';
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import { useSelector } from 'react-redux';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
 export const AddPost = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const isAuth = useSelector(selectIsAuth);
   const [imageUrl, setImageUrl] = React.useState('');
@@ -18,7 +19,7 @@ export const AddPost = () => {
   const [tags, setTags] = React.useState('');
   const [isLoading, setIsLoading] = React.useState('false');
   const inputFileRef = React.useRef(null);
-
+  const isEditing = Boolean(id);
   const handleChangeFile = async (event) => {
     try {
       const formData = new FormData();
@@ -44,21 +45,34 @@ export const AddPost = () => {
 
   const onSubmit = async () => {
     try {
-      setIsLoading('true');
+      setIsLoading(true);
       const fields = {
         title,
         imageUrl,
-        tags: tags.split(','),
+        tags,
         text,
       };
-      const postData = await axios.post('/posts', fields);
+      const postData = isEditing
+        ? await axios.patch(`/posts/${id}`, fields)
+        : await axios.post('/posts', fields);
       console.log(postData);
-      const id = postData.data._id;
-      navigate(`/posts/${id}`);
+      const _id = isEditing ? id : postData.data._id;
+      navigate(`/posts/${_id}`);
     } catch (error) {
       console.warn(error);
     }
   };
+
+  React.useEffect(() => {
+    if (id) {
+      axios.get(`/posts/${id}`).then(({ data }) => {
+        setTitle(data.title);
+        setText(data.text);
+        setTags(data.tags.join(','));
+        setImageUrl(data.imageUrl);
+      });
+    }
+  }, [id]);
 
   const options = React.useMemo(
     () => ({
@@ -131,7 +145,7 @@ export const AddPost = () => {
       />
       <div className={styles.buttons}>
         <Button onClick={onSubmit} size="large" variant="contained">
-          Submit post
+          {isEditing ? 'Save changes' : 'Submit post'}
         </Button>
         <a href="/">
           <Button size="large">Cancel</Button>
