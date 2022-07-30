@@ -2,7 +2,8 @@ import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
-
+import { Pagination } from '@mui/material';
+import { usePagination } from '../components/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts, fetchTags } from '../redux/slices/posts';
 import { Post } from '../components/Post';
@@ -15,10 +16,23 @@ export const Home = () => {
   const userData = useSelector((state) => state.auth.data);
   const isPostsLoading = posts.status === 'loading';
   const isTagsLoading = tags.status === 'loading';
+
   React.useEffect(() => {
     dispatch(fetchPosts());
     dispatch(fetchTags());
   }, [dispatch]);
+
+  const [page, setPage] = React.useState(1);
+  const postsPerPage = 5;
+
+  const count = Math.ceil(posts.items.length / postsPerPage);
+  const allDisplayedPosts = usePagination(posts.items, postsPerPage);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    allDisplayedPosts.jump(p);
+  };
+
   return (
     <>
       <Tabs
@@ -31,7 +45,10 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) =>
+          {(isPostsLoading
+            ? [...Array(5)]
+            : allDisplayedPosts.currentData()
+          ).map((obj, index) =>
             isPostsLoading ? (
               <Post key={index} isLoading={true} />
             ) : (
@@ -49,6 +66,7 @@ export const Home = () => {
             )
           )}
         </Grid>
+
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           {/* <CommentsBlock
@@ -74,6 +92,17 @@ export const Home = () => {
           /> */}
         </Grid>
       </Grid>
+      <Pagination
+        color="primary"
+        sx={{
+          justifyContent: 'center',
+          display: 'flex',
+        }}
+        count={count}
+        size="medium"
+        page={page}
+        onChange={handleChange}
+      />
     </>
   );
 };
