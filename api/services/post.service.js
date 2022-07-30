@@ -1,4 +1,5 @@
 import PostModel from '../models/post.model.js';
+import { unique } from '../utils/uniqueTags.js';
 
 export const createPost = async (data) => {
   try {
@@ -6,7 +7,7 @@ export const createPost = async (data) => {
       title: data.body.title,
       text: data.body.text,
       imageUrl: data.body.imageUrl,
-      tags: data.body.tags,
+      tags: unique(data.body.tags.split(',')),
       user: data.userId,
     });
 
@@ -19,7 +20,7 @@ export const createPost = async (data) => {
 
 export const getAllPosts = async () => {
   try {
-    return await PostModel.find().populate('user');
+    return (await PostModel.find().populate('user')).reverse();
   } catch (error) {
     console.log(error);
     throw Error('Error while getting all posts');
@@ -75,7 +76,7 @@ export const updatePost = async (data) => {
         title: data.body.title,
         text: data.body.text,
         imageUrl: data.body.imageUrl,
-        tags: data.body.tags,
+        tags: unique(data.body.tags.split(',')),
         user: data.userId,
       }
     );
@@ -86,11 +87,14 @@ export const updatePost = async (data) => {
 };
 export const getAllTags = async () => {
   try {
-    const posts = await PostModel.find().limit(5);
-    return posts
-      .map((obj) => obj.tags)
-      .flat()
-      .slice(0, 5);
+    const posts = await PostModel.find().limit(10);
+    return unique(
+      posts
+        .map((obj) => obj.tags.reverse())
+        .reverse()
+        .flat()
+        .slice(0, 10)
+    );
   } catch (error) {
     console.log(error);
     throw Error('Error while getting tags');
