@@ -79,3 +79,27 @@ export const getUser = async (data) => {
     throw Error('Error while getting user');
   }
 };
+
+export const updateUser = async (data) => {
+  try {
+    const userId = data._id;
+    const password = data.password;
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    return await UserModel.findOneAndUpdate(
+      {
+        _id: userId,
+      },
+      {
+        fullName: data.fullName,
+        email: data.email,
+        passwordHash: hash,
+        avatarUrl: data.avatarUrl,
+      },
+      {
+        returnDocument: 'after',
+      }
+    );
+  } catch (error) {}
+};
