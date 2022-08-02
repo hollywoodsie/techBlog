@@ -100,3 +100,15 @@ export const getAllTags = async () => {
     throw Error('Error while getting tags');
   }
 };
+
+export const getSpecificPosts = async (data) => {
+  const tag = data.params.tag;
+  try {
+    return (await PostModel.find().populate('user'))
+      .reverse()
+      .filter((obj) => obj.tags.includes(tag));
+  } catch (error) {
+    console.log(error);
+    throw Error('Error while getting all posts');
+  }
+};

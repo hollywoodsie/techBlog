@@ -1,8 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../axios';
 
+export const fetchSpecificPosts = createAsyncThunk(
+  'posts/fetchSpecificPosts',
+  async (tag) => {
+    const { data } = await axios.get(`/tags/${tag}`);
+    return data;
+  }
+);
+
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
-  const { data } = await axios.get('/posts');
+  const { data } = await axios.get(`/posts`);
   return data;
 });
 
@@ -65,6 +73,18 @@ const postSlice = createSlice({
       state.posts.items = state.posts.items.filter(
         (obj) => obj._id !== action.meta.arg
       );
+    },
+    [fetchSpecificPosts.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'loading';
+    },
+    [fetchSpecificPosts.fulfilled]: (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = 'loaded';
+    },
+    [fetchSpecificPosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'error';
     },
   },
 });
