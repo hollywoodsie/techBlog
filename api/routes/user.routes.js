@@ -25,7 +25,13 @@ router.post(
   UserController.login
 );
 router.get('/auth/me', checkAuth, UserController.getMe);
-
+router.patch(
+  '/settings',
+  checkAuth,
+  registerValidation,
+  validationErrorsHandler,
+  UserController.updateUser
+);
 //post routes
 router.get('/posts', PostController.getAll);
 router.get('/posts/:id', PostController.getOne);
@@ -44,6 +50,7 @@ router.patch(
 );
 router.delete('/posts/:id', checkAuth, PostController.remove);
 router.get('/tags', PostController.getTags);
+router.get('/tags/:tag', PostController.getSpecific);
 //images
 router.post(
   '/images',

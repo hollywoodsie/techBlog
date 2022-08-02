@@ -5,10 +5,10 @@ import styles from './Header.module.scss';
 import Container from '@mui/material/Container';
 import { selectIsAuth, logout } from '../../redux/slices/auth';
 import { useDispatch, useSelector } from 'react-redux';
-export const Header = () => {
+export const Header = ({ userId }) => {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuth);
-
+  const userData = useSelector((state) => state.auth.data);
   const onClickLogout = () => {
     if (window.confirm('Are you sure you want to log out?')) {
       dispatch(logout());
@@ -28,6 +28,9 @@ export const Header = () => {
               <>
                 <Link to="/add-post">
                   <Button variant="contained">Create post</Button>
+                </Link>
+                <Link to={`/settings`}>
+                  <Button variant="contained">Settings</Button>
                 </Link>
                 <Button
                   onClick={onClickLogout}

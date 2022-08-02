@@ -4,12 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components';
-import { Home, FullPost, Registration, AddPost, Login } from './pages';
+import {
+  Home,
+  FullPost,
+  Registration,
+  AddPost,
+  Login,
+  Settings,
+  SpecificTag,
+} from './pages';
+
 import { fetchAuthMe, selectIsAuth } from './redux/slices/auth';
 
 function App() {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuth);
+
   React.useEffect(() => {
     dispatch(fetchAuthMe());
   }, [dispatch]);
@@ -22,8 +32,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/posts/:id" element={<FullPost />} />
           <Route path="/posts/:id/edit" element={<AddPost />} />
+          <Route path="/tags/:tag" element={<SpecificTag />} />
           <Route path="/add-post" element={<AddPost />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/register" element={<Registration />} />
         </Routes>
       </Container>
