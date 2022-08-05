@@ -22,29 +22,31 @@ export const Home = () => {
   const isTagsLoading = tags.status === 'loading';
   const [tag, setTag] = React.useState('');
   const [tabValue, setTabValue] = React.useState('new');
+  const [page, setPage] = React.useState(1);
+  const maxPagesCount = Math.ceil(posts.items.pagesCount);
+  const paginator = usePagination(maxPagesCount);
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
   };
+  const handleChangePage = (e, p) => {
+    setPage(p);
+    console.log(page);
+    paginator.jump(p);
+  };
+
   React.useEffect(() => {
     dispatch(fetchTags());
     dispatch(fetchAuthMe());
-  }, [dispatch]);
+  }, [page]);
 
   React.useEffect(() => {
-    dispatch(fetchPosts(tag));
+    dispatch(fetchPosts({ tag, page }));
+  }, [tag, page]);
+
+  React.useEffect(() => {
+    setPage(1);
   }, [tag]);
-
-  const [page, setPage] = React.useState(1);
-  const postsPerPage = 5;
-
-  const count = Math.ceil(posts.items.length / postsPerPage);
-  const allDisplayedPosts = usePagination(posts.items, postsPerPage);
-
-  const handleChange = (e, p) => {
-    setPage(p);
-    allDisplayedPosts.jump(p);
-  };
 
   return (
     <>
@@ -57,25 +59,23 @@ export const Home = () => {
         <TabPanel value="new">
           <Grid container spacing={4}>
             <Grid xs={8} item>
-              {(isPostsLoading
-                ? [...Array(5)]
-                : allDisplayedPosts.currentData()
-              ).map((obj, index) =>
-                isPostsLoading ? (
-                  <Post key={index} isLoading={true} />
-                ) : (
-                  <Post
-                    id={obj._id}
-                    title={obj.title}
-                    imageUrl={obj.imageUrl ? obj.imageUrl : ''}
-                    user={obj.user}
-                    createdAt={obj.createdAt}
-                    viewsCount={obj.viewsCount}
-                    commentsCount={3}
-                    tags={obj.tags}
-                    isEditable={userData?._id === obj.user._id}
-                  />
-                )
+              {(isPostsLoading ? [...Array(5)] : posts.items.result).map(
+                (obj, index) =>
+                  isPostsLoading ? (
+                    <Post key={index} isLoading={true} />
+                  ) : (
+                    <Post
+                      id={obj._id}
+                      title={obj.title}
+                      imageUrl={obj.imageUrl ? obj.imageUrl : ''}
+                      user={obj.user}
+                      createdAt={obj.createdAt}
+                      viewsCount={obj.viewsCount}
+                      commentsCount={3}
+                      tags={obj.tags}
+                      isEditable={userData?._id === obj.user._id}
+                    />
+                  )
               )}
             </Grid>
 
@@ -125,10 +125,10 @@ export const Home = () => {
           justifyContent: 'center',
           display: 'flex',
         }}
-        count={count}
+        count={maxPagesCount}
         size="medium"
         page={page}
-        onChange={handleChange}
+        onChange={handleChangePage}
       />
     </>
   );
