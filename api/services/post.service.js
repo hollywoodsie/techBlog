@@ -18,9 +18,30 @@ export const createPost = async (data) => {
   }
 };
 
-export const getAllPosts = async () => {
+export const getAllPosts = async (data) => {
+  const tag = data.query.tag;
+  const page = parseInt(data.query.page);
+
+  const limit = 5;
+  const total = tag
+    ? await PostModel.countDocuments({ tags: tag })
+    : await PostModel.countDocuments({});
+  const pagesCount = total / limit;
+  const skip = (page - 1) * limit;
   try {
-    return (await PostModel.find().populate('user')).reverse();
+    const result = tag
+      ? await PostModel.find({ tags: tag })
+          .sort({ createdAt: -1 })
+          .populate('user')
+          .skip(skip)
+          .limit(limit)
+      : await PostModel.find()
+          .populate('user')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit);
+
+    return { result, pagesCount };
   } catch (error) {
     console.log(error);
     throw Error('Error while getting all posts');
