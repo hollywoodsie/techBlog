@@ -19,11 +19,12 @@ import {
 
 export const Settings = () => {
   const userData = useSelector((state) => state.auth.data);
-
+  const isDataLoading = userData.status === 'loading';
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
   const inputFileRef = React.useRef(null);
 
+  const [urlImage, setUrl] = React.useState(userData.avatarUrl);
   const {
     register,
     handleSubmit,
@@ -32,7 +33,7 @@ export const Settings = () => {
     setValue,
   } = useForm({
     defaultValues: {
-      avatarUrl: ``,
+      avatarUrl: urlImage,
       fullName: `${userData?.fullName ?? ''}`,
       email: `${userData?.email ?? ''}`,
       password: `**********`,
@@ -42,34 +43,36 @@ export const Settings = () => {
   React.useEffect(() => {
     if (userData) {
       console.log('reset');
-
       reset(userData);
     }
-  }, [userData, reset]);
+  }, [userData]);
+
   const handleChangeFile = async (event) => {
     try {
       const formData = new FormData();
       const file = event.target.files[0];
       formData.append('image', file);
       const { data } = await axios.post('/images', formData);
-      const temporaryUrl = await axios.get(`images/${data}`);
-      console.warn(`temp =${temporaryUrl.data}`);
-      setValue('avatarUrl', temporaryUrl.data);
+      const url = await axios.get(`images/${data}`);
+      setUrl(url.data);
+      setValue('avatarUrl', url.data);
     } catch (error) {
       console.warn(error);
       alert('Error while uploading image');
     }
   };
   const onSubmit = async (values) => {
-    const data = await axios.patch('/settings', values);
-    if (!data.payload) {
-      return alert('Register failed');
-    }
-    if ('token' in data.payload) {
-      window.localStorage.setItem('token', data.payload.token);
+    try {
+      //     const { data } = await axios.post('/images', selectedFile);
+      //     const temporaryUrl = await axios.get(`images/${data}`);
+      //     console.warn(`temp =${temporaryUrl.data}`);
+      //     setValue('avatarUrl', temporaryUrl.data);
+
+      await axios.patch('/settings', values);
+    } catch (error) {
+      console.warn(error);
     }
   };
-
   if (!userData) return null;
   return (
     <Paper classes={{ root: styles.root }}>
@@ -79,7 +82,7 @@ export const Settings = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.avatar}>
           <Avatar
-            src={userData.avatarUrl}
+            src={urlImage}
             sx={{ width: 100, height: 100 }}
             onClick={() => inputFileRef.current.click()}
             {...register('avatarUrl')}
