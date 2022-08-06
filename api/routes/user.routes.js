@@ -1,6 +1,7 @@
 import express, { application } from 'express';
 import { registerValidation } from '../validators/auth.validation.js';
 import { postCreateValidation } from '../validators/post.validation.js';
+import { settingsValidation } from '../validators/settings.validation.js';
 import { checkAuth, validationErrorsHandler } from '../middleware/index.js';
 import {
   UserController,
@@ -28,7 +29,7 @@ router.get('/auth/me', checkAuth, UserController.getMe);
 router.patch(
   '/settings',
   checkAuth,
-  registerValidation,
+  settingsValidation,
   validationErrorsHandler,
   UserController.updateUser
 );
