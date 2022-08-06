@@ -21,13 +21,15 @@ export const Home = () => {
   const isPostsLoading = posts.status === 'loading';
   const isTagsLoading = tags.status === 'loading';
   const [tag, setTag] = React.useState('');
-  const [tabValue, setTabValue] = React.useState('new');
+  const [orderBy, setOrderBy] = React.useState('new');
   const [page, setPage] = React.useState(1);
+
   const maxPagesCount = Math.ceil(posts.items.pagesCount);
   const paginator = usePagination(maxPagesCount);
 
   const handleChangeTab = (event, newValue) => {
-    setTabValue(newValue);
+    setTag('');
+    setOrderBy(newValue);
   };
   const handleChangePage = (e, p) => {
     setPage(p);
@@ -38,19 +40,19 @@ export const Home = () => {
   React.useEffect(() => {
     dispatch(fetchTags());
     dispatch(fetchAuthMe());
-  }, [page]);
+  }, []);
 
   React.useEffect(() => {
-    dispatch(fetchPosts({ tag, page }));
-  }, [tag, page]);
+    dispatch(fetchPosts({ orderBy, tag, page }));
+  }, [tag, page, orderBy]);
 
   React.useEffect(() => {
     setPage(1);
-  }, [tag]);
+  }, [tag, orderBy]);
 
   return (
     <>
-      <TabContext value={tabValue}>
+      <TabContext value={orderBy}>
         <TabList onChange={handleChangeTab} aria-label="lab API tabs example">
           <Tab label="New" value="new" />
           <Tab label="Popular" value="popular" />
@@ -89,34 +91,36 @@ export const Home = () => {
           </Grid>
         </TabPanel>
         <TabPanel value="popular">
-          {/* <Grid container spacing={4}>
+          <Grid container spacing={4}>
             <Grid xs={8} item>
-              {(isPostsLoading
-                ? [...Array(5)]
-                : allDisplayedPosts.currentData()
-              ).map((obj, index) =>
-                isPostsLoading ? (
-                  <Post key={index} isLoading={true} />
-                ) : (
-                  <Post
-                    id={obj._id}
-                    title={obj.title}
-                    imageUrl={obj.imageUrl ? obj.imageUrl : ''}
-                    user={obj.user}
-                    createdAt={obj.createdAt}
-                    viewsCount={obj.viewsCount}
-                    commentsCount={3}
-                    tags={obj.tags}
-                    isEditable={userData?._id === obj.user._id}
-                  />
-                )
+              {(isPostsLoading ? [...Array(5)] : posts.items.result).map(
+                (obj, index) =>
+                  isPostsLoading ? (
+                    <Post key={index} isLoading={true} />
+                  ) : (
+                    <Post
+                      id={obj._id}
+                      title={obj.title}
+                      imageUrl={obj.imageUrl ? obj.imageUrl : ''}
+                      user={obj.user}
+                      createdAt={obj.createdAt}
+                      viewsCount={obj.viewsCount}
+                      commentsCount={3}
+                      tags={obj.tags}
+                      isEditable={userData?._id === obj.user._id}
+                    />
+                  )
               )}
             </Grid>
 
             <Grid xs={4} item>
-              <TagsBlock items={tags.items} isLoading={isTagsLoading} />
+              <TagsBlock
+                items={tags.items}
+                isLoading={isTagsLoading}
+                setTag={setTag}
+              />
             </Grid>
-          </Grid> */}
+          </Grid>
         </TabPanel>
       </TabContext>
       <Pagination
