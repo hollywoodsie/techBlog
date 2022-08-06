@@ -7,20 +7,19 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import TagIcon from '@mui/icons-material/Tag';
 import ListItemText from '@mui/material/ListItemText';
 import Skeleton from '@mui/material/Skeleton';
-
+import axios from '../axios';
 import { SideBlock } from './SideBlock';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-export const TagsBlock = ({ items, isLoading = true }) => {
+export const TagsBlock = ({ items, isLoading = true, setTag }) => {
   return (
     <SideBlock title="Tags">
       <List>
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
-          <a
-            style={{ textDecoration: 'none', color: 'black' }}
-            href={`/tags/${name}`}
-          >
+          <Link style={{ textDecoration: 'none', color: 'black' }} to={`/`}>
             <ListItem key={i} disablePadding>
-              <ListItemButton>
+              <ListItemButton onClick={() => setTag(name)}>
                 <ListItemIcon>
                   <TagIcon />
                 </ListItemIcon>
@@ -31,7 +30,7 @@ export const TagsBlock = ({ items, isLoading = true }) => {
                 )}
               </ListItemButton>
             </ListItem>
-          </a>
+          </Link>
         ))}
       </List>
     </SideBlock>
