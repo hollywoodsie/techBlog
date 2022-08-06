@@ -86,7 +86,14 @@ export const updateUser = async (data) => {
     const password = data.password;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
+    const user = await UserModel.findOne({ _id: userId });
+    const isValidPass = user
+      ? await bcrypt.compare(password, user._doc.passwordHash)
+      : null;
 
+    if (!isValidPass) {
+      throw Error('Invalid password');
+    }
     return await UserModel.findOneAndUpdate(
       {
         _id: userId,
@@ -101,5 +108,8 @@ export const updateUser = async (data) => {
         returnDocument: 'after',
       }
     );
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw Error(error);
+  }
 };
