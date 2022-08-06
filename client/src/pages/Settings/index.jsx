@@ -19,12 +19,12 @@ import {
 
 export const Settings = () => {
   const userData = useSelector((state) => state.auth.data);
-  const isDataLoading = userData.status === 'loading';
+  console.log({ userData });
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
   const inputFileRef = React.useRef(null);
 
-  const [urlImage, setUrl] = React.useState(userData.avatarUrl);
+  const [urlImage, setUrl] = React.useState(userData?.avatarUrl ?? '');
   const {
     register,
     handleSubmit,
@@ -36,12 +36,13 @@ export const Settings = () => {
       avatarUrl: urlImage,
       fullName: `${userData?.fullName ?? ''}`,
       email: `${userData?.email ?? ''}`,
-      password: `**********`,
+      password: ``,
     },
   });
 
   React.useEffect(() => {
     if (userData) {
+      setUrl(userData.avatarUrl);
       console.log('reset');
       reset(userData);
     }
@@ -113,9 +114,10 @@ export const Settings = () => {
         <TextField
           className={styles.field}
           label="Password"
+          type="password"
           error={Boolean(errors.password?.message)}
           helperText={errors.password?.message}
-          {...register('password', { required: 'Enter password' })}
+          {...register('password')}
           fullWidth
         />
         <Button
