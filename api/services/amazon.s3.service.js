@@ -30,19 +30,9 @@ export const uploadFile = (fileBuffer, fileName, mimetype) => {
   }
 };
 
-export async function getObjectSignedUrl(key) {
+export async function getObjectUrl(key) {
   try {
-    const params = {
-      Bucket: bucketName,
-      Key: key,
-    };
-
-    // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
-    const command = new GetObjectCommand(params);
-    const week = 604800;
-    const url = await getSignedUrl(client, command, { expiresIn: week });
-
-    return url;
+    return `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${key}`;
   } catch (error) {
     console.log(error);
     throw Error('Error while downloading image from cloud');

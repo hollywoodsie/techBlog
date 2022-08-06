@@ -16,7 +16,7 @@ export const uploadImageToCloud = async (req, res, next) => {
 export const getImageFromCloud = async (req, res, next) => {
   try {
     const key = req.params.key;
-    const imageUrl = await ImagesService.getObjectSignedUrl(key);
+    const imageUrl = await ImagesService.getObjectUrl(key);
     res.status(200).json(imageUrl);
   } catch (error) {
     res.status(400).json({ message: error.message });
