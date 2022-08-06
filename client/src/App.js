@@ -11,7 +11,6 @@ import {
   AddPost,
   Login,
   Settings,
-  SpecificTag,
 } from './pages';
 
 import { fetchAuthMe, selectIsAuth } from './redux/slices/auth';
@@ -32,7 +31,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/posts/:id" element={<FullPost />} />
           <Route path="/posts/:id/edit" element={<AddPost />} />
-          <Route path="/tags/:tag" element={<SpecificTag />} />
           <Route path="/add-post" element={<AddPost />} />
           <Route path="/login" element={<Login />} />
           <Route path="/settings" element={<Settings />} />

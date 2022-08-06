@@ -25,6 +25,7 @@ export const AddPost = () => {
       const formData = new FormData();
       const file = event.target.files[0];
       formData.append('image', file);
+
       const { data } = await axios.post('/images', formData);
       const temporaryUrl = await axios.get(`images/${data}`);
       setImageUrl(temporaryUrl.data);
@@ -79,7 +80,7 @@ export const AddPost = () => {
       spellChecker: false,
       maxHeight: '400px',
       autofocus: true,
-      placeholder: 'Введите текст...',
+      placeholder: 'Text here...',
       status: false,
       autosave: {
         enabled: true,

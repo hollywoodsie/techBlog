@@ -5,7 +5,7 @@ import styles from './Header.module.scss';
 import Container from '@mui/material/Container';
 import { selectIsAuth, logout } from '../../redux/slices/auth';
 import { useDispatch, useSelector } from 'react-redux';
-export const Header = ({ userId }) => {
+export const Header = () => {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuth);
   const userData = useSelector((state) => state.auth.data);

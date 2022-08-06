@@ -8,5 +8,5 @@ export const registerValidation = [
   body('fullName', 'Full name must be at least 3 characters long').isLength({
     min: 3,
   }),
-  body('avatarUrl', 'Invalid avatar url').optional().isURL(),
+  body('avatarUrl', 'Invalid avatar url').optional(),
 ];
