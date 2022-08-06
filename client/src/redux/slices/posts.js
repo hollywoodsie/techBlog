@@ -3,8 +3,10 @@ import axios from '../../axios';
 
 export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
-  async ({ tag, page }) => {
-    const { data } = await axios.get(`/posts`, { params: { tag, page } });
+  async ({ orderBy, tag, page }) => {
+    const { data } = await axios.get(`/posts`, {
+      params: { orderBy, tag, page },
+    });
     return data;
   }
 );
