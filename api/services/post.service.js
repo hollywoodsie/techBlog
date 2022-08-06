@@ -21,7 +21,8 @@ export const createPost = async (data) => {
 export const getAllPosts = async (data) => {
   const tag = data.query.tag;
   const page = parseInt(data.query.page);
-
+  const orderBy =
+    data.query.orderBy === 'popular' ? { viewsCount: -1 } : { createdAt: -1 };
   const limit = 5;
   const total = tag
     ? await PostModel.countDocuments({ tags: tag })
@@ -31,13 +32,13 @@ export const getAllPosts = async (data) => {
   try {
     const result = tag
       ? await PostModel.find({ tags: tag })
-          .sort({ createdAt: -1 })
+          .sort(orderBy)
           .populate('user')
           .skip(skip)
           .limit(limit)
       : await PostModel.find()
           .populate('user')
-          .sort({ createdAt: -1 })
+          .sort(orderBy)
           .skip(skip)
           .limit(limit);
 

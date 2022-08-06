@@ -11,7 +11,7 @@ export const create = async (req, res, next) => {
 
 export const getAll = async (req, res, next) => {
   try {
-    const allPosts = await PostService.getAllPosts();
+    const allPosts = await PostService.getAllPosts(req);
     res.status(200).json(allPosts);
   } catch (error) {
     res.status(500).json({ message: error.message });
