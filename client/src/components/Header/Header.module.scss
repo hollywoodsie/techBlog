@@ -8,11 +8,12 @@
 .inner {
   display: flex;
   justify-content: space-between;
+  margin-bottom : -5px;
+  
 }
 
-.logo {
-  background-color: rgb(84, 84, 84);
-  color: rgb(255, 255, 255);
+.logoText { 
+  color: rgb(84, 84, 84);
   font-weight: 700;
   line-height: 35px;
   text-transform: uppercase;
@@ -20,15 +21,18 @@
   border-radius: 5px;
   padding: 0 10px;
   text-decoration: none;
+  margin-top: 7.5px;
+  float: right;
 
   &:hover {
-    background-color: #4361ee;
+    color: #4361ee;
   }
 }
 
 .buttons {
   button {
     margin-left: 10px;
+    margin-top : 7.5px;
   }
 
   a {
