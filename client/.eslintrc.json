@@ -1,0 +1,44 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb",
+        "prettier"
+    ],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "babelOptions": {
+            "presets": [
+                "@babel/preset-react"
+            ]
+        },
+        "requireConfigFile": false,
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "prettier"
+        
+    ],
+    "rules": {
+        "no-param-reassign": [
+            2,
+            {
+                "props": false
+            }
+        ],
+        "import/prefer-default-export": "off",
+        "prettier/prettier": "error",
+        "react/jsx-props-no-spreading": "off",
+        "react/prop-types": "off",
+        "react/no-array-index-key" : "off",
+        "no-underscore-dangle": "off"
+    }
+}
