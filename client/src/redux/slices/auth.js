@@ -3,28 +3,44 @@ import axios from '../../axios';
 
 export const fetchLogin = createAsyncThunk(
   'auth/fetchLogin',
-  async (params) => {
-    const { data } = await axios.post('/auth/login', params);
-    return data;
-  }
+  async (params, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post('/auth/login', params);
+      return data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response);
+    }
+  },
 );
 
 export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
   const { data } = await axios.get('/auth/me');
+
   return data;
 });
 
 export const fetchRegister = createAsyncThunk(
   'auth/fetchRegister',
-  async (params) => {
-    const { data } = await axios.post('/auth/register', params);
-    return data;
-  }
+  async (params, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post('/auth/register', params);
+      return data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response);
+    }
+  },
 );
 
 const initialState = {
   data: null,
   status: 'loading',
+  error: null,
 };
 
 const authSlice = createSlice({
@@ -44,9 +60,10 @@ const authSlice = createSlice({
       state.status = 'loaded';
       state.data = action.payload;
     },
-    [fetchLogin.rejected]: (state) => {
+    [fetchLogin.rejected]: (state, action) => {
       state.status = 'error';
       state.data = null;
+      state.error = action.payload.data;
     },
     [fetchAuthMe.pending]: (state) => {
       state.status = 'loading';
@@ -68,9 +85,10 @@ const authSlice = createSlice({
       state.status = 'loaded';
       state.data = action.payload;
     },
-    [fetchRegister.rejected]: (state) => {
+    [fetchRegister.rejected]: (state, action) => {
       state.status = 'error';
       state.data = null;
+      state.error = action.payload.data;
     },
   },
 });
