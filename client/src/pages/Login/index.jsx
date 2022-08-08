@@ -9,14 +9,15 @@ import { useForm } from 'react-hook-form';
 import styles from './Login.module.scss';
 import { fetchLogin, selectIsAuth } from '../../redux/slices/auth';
 
-export const Login = () => {
+export function Login() {
+  const err = useSelector((state) => state.auth.error);
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       email: '',
@@ -24,11 +25,19 @@ export const Login = () => {
     },
   });
 
+  React.useEffect(() => {
+    if (err) {
+      err.forEach((obj) => {
+        setError('password', {
+          type: 'server',
+          message: obj.msg,
+        });
+      });
+    }
+  }, [err]);
   const onSubmit = async (values) => {
     const data = await dispatch(fetchLogin(values));
-    if (!data.payload) {
-      return alert('Login failed');
-    }
+
     if ('token' in data.payload) {
       window.localStorage.setItem('token', data.payload.token);
     }
@@ -45,23 +54,25 @@ export const Login = () => {
         <TextField
           className={styles.field}
           label="E-Mail"
-          error={Boolean(errors.email?.message)}
-          helperText={errors.email?.message}
+          error={Boolean(errors.password?.message)}
+          helperText={errors.email?.message ?? []}
           {...register('email', { required: 'Enter e-mail address' })}
           fullWidth
         />
         <TextField
           className={styles.field}
           label="Password"
+          type="password"
           error={Boolean(errors.password?.message)}
           helperText={errors.password?.message}
           {...register('password', { required: 'Enter password' })}
           fullWidth
         />
+
         <Button type="submit" size="large" variant="contained" fullWidth>
           SignIn
         </Button>
       </form>
     </Paper>
   );
-};
+}
