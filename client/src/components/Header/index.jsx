@@ -1,14 +1,15 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import styles from './Header.module.scss';
 import Container from '@mui/material/Container';
-import { selectIsAuth, logout } from '../../redux/slices/auth';
 import { useDispatch, useSelector } from 'react-redux';
-export const Header = () => {
+import styles from './Header.module.scss';
+import { selectIsAuth, logout } from '../../redux/slices/auth';
+
+export function Header() {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuth);
-  const userData = useSelector((state) => state.auth.data);
+
   const onClickLogout = () => {
     if (window.confirm('Are you sure you want to log out?')) {
       dispatch(logout());
@@ -20,8 +21,9 @@ export const Header = () => {
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <Link className={styles.logo} to="/">
-            <div>Tech Blog</div>
+          <Link to="/">
+            <img src="/logo.png" alt="" />
+            <div className={styles.logoText}>TechBlog</div>
           </Link>
           <div className={styles.buttons}>
             {isAuth ? (
@@ -29,7 +31,7 @@ export const Header = () => {
                 <Link to="/add-post">
                   <Button variant="contained">Create post</Button>
                 </Link>
-                <Link to={`/settings`}>
+                <Link to="/settings">
                   <Button variant="contained">Settings</Button>
                 </Link>
                 <Button
@@ -55,4 +57,4 @@ export const Header = () => {
       </Container>
     </div>
   );
-};
+}

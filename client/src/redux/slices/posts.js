@@ -4,11 +4,11 @@ import axios from '../../axios';
 export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
   async ({ orderBy, tag, page }) => {
-    const { data } = await axios.get(`/posts`, {
+    const { data } = await axios.get('/posts', {
       params: { orderBy, tag, page },
     });
     return data;
-  }
+  },
 );
 
 export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
@@ -20,7 +20,7 @@ export const fetchRemovePost = createAsyncThunk(
   'posts/fetchRemovePost',
   async (id) => {
     await axios.delete(`/posts/${id}`);
-  }
+  },
 );
 
 const initialState = {
@@ -39,7 +39,6 @@ const postSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    //fetch posts
     [fetchPosts.pending]: (state) => {
       state.posts.items = [];
       state.posts.status = 'loading';
@@ -52,7 +51,7 @@ const postSlice = createSlice({
       state.posts.items = [];
       state.posts.status = 'error';
     },
-    //fetch tags
+
     [fetchTags.pending]: (state) => {
       state.tags.items = [];
       state.tags.status = 'loading';
@@ -65,10 +64,11 @@ const postSlice = createSlice({
       state.tags.items = [];
       state.tags.status = 'error';
     },
-    //remove post
+
     [fetchRemovePost.pending]: (state, action) => {
-      state.posts.items = state.posts.items.filter(
-        (obj) => obj._id !== action.meta.arg
+      state.posts.items.result = state.posts.items.result.filter(
+        // eslint-disable-next-line no-underscore-dangle
+        (obj) => obj._id !== action.meta.arg,
       );
     },
   },

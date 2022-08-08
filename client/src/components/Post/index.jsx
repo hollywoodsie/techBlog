@@ -4,28 +4,27 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
-import CommentIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import styles from './Post.module.scss';
 import { UserInfo } from '../UserInfo';
 import { PostSkeleton } from './Skeleton';
-import { useDispatch } from 'react-redux';
 import { fetchRemovePost } from '../../redux/slices/posts';
 
-export const Post = ({
+export function Post({
   id,
   title,
   createdAt,
   imageUrl,
   user,
   viewsCount,
-  commentsCount,
   tags,
   children,
   isFullPost,
   isLoading,
   isEditable,
-}) => {
+}) {
   const dispatch = useDispatch();
 
   if (isLoading) {
@@ -80,13 +79,9 @@ export const Post = ({
               <EyeIcon />
               <span>{viewsCount}</span>
             </li>
-            <li>
-              <CommentIcon />
-              <span>{commentsCount}</span>
-            </li>
           </ul>
         </div>
       </div>
     </div>
   );
-};
+}

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-shadow */
+import { useState } from 'react';
 
 export const usePagination = (maxPage) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,7 +14,7 @@ export const usePagination = (maxPage) => {
 
   const jump = (page) => {
     const pageNumber = Math.max(1, page);
-    setCurrentPage((currentPage) => Math.min(pageNumber, maxPage));
+    setCurrentPage(() => Math.min(pageNumber, maxPage));
   };
 
   return { next, prev, jump, currentPage, maxPage };

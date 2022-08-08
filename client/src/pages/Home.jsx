@@ -1,20 +1,20 @@
 import React from 'react';
-import Tabs from '@mui/material/Tabs';
+
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Grid from '@mui/material/Grid';
 import { Pagination } from '@mui/material';
-import { usePagination } from '../components/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { usePagination } from '../components/Pagination';
 import { fetchPosts, fetchTags } from '../redux/slices/posts';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
-import { useParams } from 'react-router-dom';
 import { fetchAuthMe } from '../redux/slices/auth';
 
-export const Home = () => {
+export function Home() {
   const dispatch = useDispatch();
   const { posts, tags } = useSelector((state) => state.posts);
   const userData = useSelector((state) => state.auth.data);
@@ -33,7 +33,7 @@ export const Home = () => {
   };
   const handleChangePage = (e, p) => {
     setPage(p);
-    console.log(page);
+
     paginator.jump(p);
   };
 
@@ -64,7 +64,7 @@ export const Home = () => {
               {(isPostsLoading ? [...Array(5)] : posts.items.result).map(
                 (obj, index) =>
                   isPostsLoading ? (
-                    <Post key={index} isLoading={true} />
+                    <Post key={index} isLoading />
                   ) : (
                     <Post
                       id={obj._id}
@@ -77,7 +77,7 @@ export const Home = () => {
                       tags={obj.tags}
                       isEditable={userData?._id === obj.user._id}
                     />
-                  )
+                  ),
               )}
             </Grid>
 
@@ -96,7 +96,7 @@ export const Home = () => {
               {(isPostsLoading ? [...Array(5)] : posts.items.result).map(
                 (obj, index) =>
                   isPostsLoading ? (
-                    <Post key={index} isLoading={true} />
+                    <Post key={index} isLoading />
                   ) : (
                     <Post
                       id={obj._id}
@@ -109,7 +109,7 @@ export const Home = () => {
                       tags={obj.tags}
                       isEditable={userData?._id === obj.user._id}
                     />
-                  )
+                  ),
               )}
             </Grid>
 
@@ -136,4 +136,4 @@ export const Home = () => {
       />
     </>
   );
-};
+}

@@ -1,30 +1,27 @@
 import React from 'react';
 
-import styles from './AddComment.module.scss';
-
 import TextField from '@mui/material/TextField';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import styles from './AddComment.module.scss';
 
-export const Index = () => {
+export function Index() {
   return (
-    <>
-      <div className={styles.root}>
-        <Avatar
-          classes={{ root: styles.avatar }}
-          src="https://mui.com/static/images/avatar/5.jpg"
+    <div className={styles.root}>
+      <Avatar
+        classes={{ root: styles.avatar }}
+        src="https://mui.com/static/images/avatar/5.jpg"
+      />
+      <div className={styles.form}>
+        <TextField
+          label="Comment"
+          variant="outlined"
+          maxRows={10}
+          multiline
+          fullWidth
         />
-        <div className={styles.form}>
-          <TextField
-            label="Comment"
-            variant="outlined"
-            maxRows={10}
-            multiline
-            fullWidth
-          />
-          <Button variant="contained">Send comment</Button>
-        </div>
+        <Button variant="contained">Send comment</Button>
       </div>
-    </>
+    </div>
   );
-};
+}

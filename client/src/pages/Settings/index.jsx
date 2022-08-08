@@ -4,32 +4,26 @@ import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 import { useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
 import styles from './Login.module.scss';
-import { useDispatch, useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
 import axios from '../../axios';
 
-import {
-  selectIsAuth,
-  fetchRegister,
-  fetchAuthMe,
-} from '../../redux/slices/auth';
-
-export const Settings = () => {
+export function Settings() {
   const userData = useSelector((state) => state.auth.data);
   console.log({ userData });
-  const isAuth = useSelector(selectIsAuth);
-  const dispatch = useDispatch();
-  const inputFileRef = React.useRef(null);
 
-  const [urlImage, setUrl] = React.useState(userData?.avatarUrl ?? '');
+  const inputFileRef = React.useRef(null);
+  const [urlImage, setImageUrl] = React.useState(userData?.avatarUrl ?? '');
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isValid },
+    setError,
+    formState: { errors },
     setValue,
   } = useForm({
     defaultValues: {
@@ -42,8 +36,8 @@ export const Settings = () => {
 
   React.useEffect(() => {
     if (userData) {
-      setUrl(userData.avatarUrl);
-      console.log('reset');
+      setImageUrl(userData.avatarUrl);
+
       reset(userData);
     }
   }, [userData]);
@@ -55,25 +49,54 @@ export const Settings = () => {
       formData.append('image', file);
       const { data } = await axios.post('/images', formData);
       const url = await axios.get(`images/${data}`);
-      setUrl(url.data);
+      setImageUrl(url.data);
       setValue('avatarUrl', url.data);
     } catch (error) {
       console.warn(error);
       alert('Error while uploading image');
     }
   };
-  const onSubmit = async (values) => {
-    try {
-      //     const { data } = await axios.post('/images', selectedFile);
-      //     const temporaryUrl = await axios.get(`images/${data}`);
-      //     console.warn(`temp =${temporaryUrl.data}`);
-      //     setValue('avatarUrl', temporaryUrl.data);
 
-      await axios.patch('/settings', values);
-    } catch (error) {
-      console.warn(error);
-    }
+  const onSubmit = async (values) => {
+    await axios
+      .patch('/settings', values)
+      .then(() => {
+        alert('Changed successfully');
+      })
+      .catch((e) => {
+        const someErrors = e.response;
+        // back errors
+        if (someErrors.data.message) {
+          setError(`${someErrors.data.params}`, {
+            type: 'server',
+            message: someErrors.data.message,
+          });
+        }
+        // validation errors
+        for (let i = 0; i < someErrors.data.length; i += 1) {
+          if (someErrors.data[i].param === 'password') {
+            setError('password', {
+              type: 'server',
+              message: someErrors.data[i].msg,
+            });
+          } else if (someErrors.data[i].param === 'fullName') {
+            setError('fullName', {
+              type: 'server',
+              message: someErrors.data[i].msg,
+            });
+          } else
+            setError('email', {
+              type: 'server',
+              message: someErrors.data[i].msg,
+            });
+        }
+      });
   };
+  const onClickRemoveImage = async () => {
+    setValue('avatarUrl', '');
+    setImageUrl('');
+  };
+
   if (!userData) return null;
   return (
     <Paper classes={{ root: styles.root }}>
@@ -95,6 +118,16 @@ export const Settings = () => {
           onChange={handleChangeFile}
           hidden
         />
+        {urlImage && (
+          <IconButton
+            aria-label="delete"
+            size="large"
+            onClick={onClickRemoveImage}
+            style={{ margin: '0 auto', display: 'flex' }}
+          >
+            <DeleteIcon fontSize="inherit" />
+          </IconButton>
+        )}
         <TextField
           className={styles.field}
           label="Full name"
@@ -103,6 +136,7 @@ export const Settings = () => {
           {...register('fullName', { required: 'Enter full name' })}
           fullWidth
         />
+
         <TextField
           className={styles.field}
           label="E-Mail"
@@ -111,6 +145,7 @@ export const Settings = () => {
           {...register('email', { required: 'Enter e-mail address' })}
           fullWidth
         />
+
         <TextField
           className={styles.field}
           label="Password"
@@ -120,6 +155,7 @@ export const Settings = () => {
           {...register('password')}
           fullWidth
         />
+
         <Button
           disabled={false}
           type="submit"
@@ -132,4 +168,4 @@ export const Settings = () => {
       </form>
     </Paper>
   );
-};
+}

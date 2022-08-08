@@ -1,15 +1,19 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import SimpleMDE from 'react-simplemde-editor';
-import { selectIsAuth } from '../../redux/slices/auth';
 import 'easymde/dist/easymde.min.css';
-import styles from './AddPost.module.scss';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 import { useSelector } from 'react-redux';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { useNavigate, Navigate, useParams } from 'react-router-dom';
+import styles from './AddPost.module.scss';
+import { selectIsAuth } from '../../redux/slices/auth';
 import axios from '../../axios';
-export const AddPost = () => {
+
+export function AddPost() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isAuth = useSelector(selectIsAuth);
@@ -17,7 +21,7 @@ export const AddPost = () => {
   const [text, setText] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
-  const [isLoading, setIsLoading] = React.useState('false');
+
   const inputFileRef = React.useRef(null);
   const isEditing = Boolean(id);
   const handleChangeFile = async (event) => {
@@ -37,7 +41,7 @@ export const AddPost = () => {
 
   const onClickRemoveImage = async () => {
     setImageUrl('');
-    //functional for removing from s3 incoming
+    // functional for removing from s3 incoming
   };
 
   const onChange = React.useCallback((value) => {
@@ -46,7 +50,6 @@ export const AddPost = () => {
 
   const onSubmit = async () => {
     try {
-      setIsLoading(true);
       const fields = {
         title,
         imageUrl,
@@ -56,7 +59,8 @@ export const AddPost = () => {
       const postData = isEditing
         ? await axios.patch(`/posts/${id}`, fields)
         : await axios.post('/posts', fields);
-      console.log(postData);
+
+      // eslint-disable-next-line no-underscore-dangle
       const _id = isEditing ? id : postData.data._id;
       navigate(`/posts/${_id}`);
     } catch (error) {
@@ -87,7 +91,7 @@ export const AddPost = () => {
         delay: 1000,
       },
     }),
-    []
+    [],
   );
   if (!window.localStorage.getItem('token') && !isAuth) {
     return <Navigate to="/" />;
@@ -95,13 +99,14 @@ export const AddPost = () => {
 
   return (
     <Paper style={{ padding: 30 }}>
-      <Button
+      <IconButton
+        color="primary"
+        aria-label="upload picture"
+        component="label"
         onClick={() => inputFileRef.current.click()}
-        variant="outlined"
-        size="large"
       >
-        Load image
-      </Button>
+        <PhotoCamera />
+      </IconButton>
       <input
         ref={inputFileRef}
         type="file"
@@ -110,13 +115,13 @@ export const AddPost = () => {
       />
       {imageUrl && (
         <>
-          <Button
-            variant="contained"
-            color="error"
+          <IconButton
+            aria-label="delete"
+            size="large"
             onClick={onClickRemoveImage}
           >
-            Remove
-          </Button>
+            <DeleteIcon fontSize="inherit" />
+          </IconButton>
           <img className={styles.image} src={imageUrl} alt="Uploaded" />
         </>
       )}
@@ -125,7 +130,7 @@ export const AddPost = () => {
       <TextField
         classes={{ root: styles.title }}
         variant="standard"
-        placeholder="Заголовок статьи..."
+        placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         fullWidth
@@ -133,7 +138,7 @@ export const AddPost = () => {
       <TextField
         classes={{ root: styles.tags }}
         variant="standard"
-        placeholder="Тэги"
+        placeholder="Tags"
         value={tags}
         onChange={(e) => setTags(e.target.value)}
         fullWidth
@@ -154,4 +159,4 @@ export const AddPost = () => {
       </div>
     </Paper>
   );
-};
+}
