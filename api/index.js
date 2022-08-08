@@ -9,7 +9,7 @@ mongoose
   .then(() => console.log('Database connected...'))
   .catch((error) => console.log('Database connection error', error));
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 4000;
 
 const app = express();
 app.use(cors());
