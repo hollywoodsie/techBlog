@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const PostSchema = new mongoose.Schema(
   {
     title: {
@@ -8,7 +9,6 @@ const PostSchema = new mongoose.Schema(
     text: {
       type: String,
       required: true,
-      unique: true,
     },
     tags: {
       type: Array,
@@ -28,7 +28,7 @@ const PostSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 export default mongoose.model('Post', PostSchema);

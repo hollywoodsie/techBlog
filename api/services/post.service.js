@@ -19,10 +19,9 @@ export const createPost = async (data) => {
 };
 
 export const getAllPosts = async (data) => {
-  const tag = data.query.tag;
-  const page = parseInt(data.query.page);
-  const orderBy =
-    data.query.orderBy === 'popular' ? { viewsCount: -1 } : { createdAt: -1 };
+  const { tag } = data.query;
+  const page = parseInt(data.query.page, 10);
+  const orderBy = data.query.orderBy === 'popular' ? { viewsCount: -1 } : { createdAt: -1 };
   const limit = 5;
   const total = tag
     ? await PostModel.countDocuments({ tags: tag })
@@ -32,15 +31,15 @@ export const getAllPosts = async (data) => {
   try {
     const result = tag
       ? await PostModel.find({ tags: tag })
-          .sort(orderBy)
-          .populate('user')
-          .skip(skip)
-          .limit(limit)
+        .sort(orderBy)
+        .populate('user')
+        .skip(skip)
+        .limit(limit)
       : await PostModel.find()
-          .populate('user')
-          .sort(orderBy)
-          .skip(skip)
-          .limit(limit);
+        .populate('user')
+        .sort(orderBy)
+        .skip(skip)
+        .limit(limit);
 
     return { result, pagesCount };
   } catch (error) {
@@ -63,7 +62,7 @@ export const getOnePost = async (data) => {
 
       {
         returnDocument: 'after',
-      }
+      },
     ).populate('user');
   } catch (error) {
     console.log(error);
@@ -74,9 +73,6 @@ export const getOnePost = async (data) => {
 export const removePost = async (data) => {
   try {
     const postId = data.id;
-    const postExists = await PostModel.findOne({
-      _id: postId,
-    });
 
     return await PostModel.findOneAndDelete({
       _id: postId,
@@ -100,7 +96,7 @@ export const updatePost = async (data) => {
         imageUrl: data.body.imageUrl,
         tags: unique(data.body.tags.split(',')),
         user: data.userId,
-      }
+      },
     );
   } catch (error) {
     console.log(error);
@@ -115,7 +111,7 @@ export const getAllTags = async () => {
         .map((obj) => obj.tags.reverse())
         .reverse()
         .flat()
-        .slice(0, 10)
+        .slice(0, 10),
     );
   } catch (error) {
     console.log(error);
@@ -124,7 +120,7 @@ export const getAllTags = async () => {
 };
 
 export const getSpecificPosts = async (data) => {
-  const tag = data.params.tag;
+  const { tag } = data.params;
   try {
     return (await PostModel.find().populate('user'))
       .reverse()

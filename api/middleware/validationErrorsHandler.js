@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import { validationResult } from 'express-validator';
 
 export const validationErrorsHandler = (req, res, next) => {

@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
-import router from './routes/user.routes.js';
 import cors from 'cors';
+import router from './routes/user.routes.js';
+
 mongoose
   .connect(process.env.DB_HOST)
   .then(() => console.log('Database connected...'))

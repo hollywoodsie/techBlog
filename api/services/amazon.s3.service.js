@@ -3,9 +3,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-  GetObjectCommand,
 } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const bucketRegion = process.env.AWS_BUCKET_REGION;
@@ -13,7 +11,7 @@ const accessKey = process.env.AWS_ACCESS_KEY_ID;
 const secretKey = process.env.AWS_SECRET_ACCESS_KEY;
 const client = new S3Client({ region: bucketRegion, accessKey, secretKey });
 
-//upload file to s3
+// upload file to s3
 
 export const uploadFile = (fileBuffer, fileName, mimetype) => {
   try {

@@ -1,10 +1,10 @@
-import UserModel from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import UserModel from '../models/user.model.js';
 
 export const createUser = async (data) => {
   try {
-    const password = data.password;
+    const { password } = data;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
@@ -17,7 +17,7 @@ export const createUser = async (data) => {
 
     const alreadyExists = await UserModel.findOne({ email: data.email });
     if (alreadyExists) {
-      throw Error('User with this e-mail already exists');
+      throw Error('User with this e-mail already exists', { cause: 'email' });
     }
 
     const user = await doc.save();
@@ -29,13 +29,13 @@ export const createUser = async (data) => {
       'secret123',
       {
         expiresIn: '30d',
-      }
+      },
     );
     const { passwordHash, ...userData } = user._doc;
     return { userData, token };
   } catch (error) {
     console.log(error);
-    throw Error('Error while creating user');
+    throw Error(error, { cause: error.cause });
   }
 };
 
@@ -58,7 +58,7 @@ export const loginUser = async (data) => {
       'secret123',
       {
         expiresIn: '30d',
-      }
+      },
     );
     const { passwordHash, ...userData } = user._doc;
     return { userData, token };
@@ -83,16 +83,22 @@ export const getUser = async (data) => {
 export const updateUser = async (data) => {
   try {
     const userId = data._id;
-    const password = data.password;
+    const { password } = data;
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     const user = await UserModel.findOne({ _id: userId });
     const isValidPass = user
       ? await bcrypt.compare(password, user._doc.passwordHash)
       : null;
-
+    const alreadyExists = await UserModel.findOne({
+      _id: { $ne: userId },
+      email: data.email,
+    });
+    if (alreadyExists) {
+      throw Error('E-mail is already taken', { cause: 'email' });
+    }
     if (!isValidPass) {
-      throw Error('Invalid password');
+      throw Error('Invalid Password', { cause: 'password' });
     }
     return await UserModel.findOneAndUpdate(
       {
@@ -106,10 +112,10 @@ export const updateUser = async (data) => {
       },
       {
         returnDocument: 'after',
-      }
+      },
     );
   } catch (error) {
     console.log(error);
-    throw Error(error);
+    throw Error(error, { cause: error.cause });
   }
 };
