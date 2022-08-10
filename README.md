@@ -1,7 +1,8 @@
 # techBlog - simple blog
 
-API documentation: https://documenter.getpostman.com/view/21744257/VUjQkiwF
-App demo : https://techblog-client.vercel.app/
+### API documentation: https://documenter.getpostman.com/view/21744257/VUjQkiwF
+
+### App demo : https://techblog-client.vercel.app/
 
 ### Tech
 
