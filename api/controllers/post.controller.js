@@ -82,12 +82,3 @@ export const getTags = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-export const getSpecific = async (req, res) => {
-  try {
-    const allPosts = await PostService.getSpecificPosts(req);
-    res.status(200).json(allPosts);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};

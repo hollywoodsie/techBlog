@@ -46,7 +46,7 @@ router.patch(
 );
 router.delete('/posts/:id', checkAuth, PostController.remove);
 router.get('/tags', PostController.getTags);
-router.get('/tags/:tag', PostController.getSpecific);
+
 // images
 router.post(
   '/images',

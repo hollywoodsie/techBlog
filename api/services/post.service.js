@@ -32,11 +32,11 @@ export const getAllPosts = async (data) => {
     const result = tag
       ? await PostModel.find({ tags: tag })
         .sort(orderBy)
-        .populate('user')
+        .populate('user', '-__v -passwordHash -email')
         .skip(skip)
         .limit(limit)
       : await PostModel.find()
-        .populate('user')
+        .populate('user', '-__v -passwordHash -email')
         .sort(orderBy)
         .skip(skip)
         .limit(limit);
@@ -63,7 +63,7 @@ export const getOnePost = async (data) => {
       {
         returnDocument: 'after',
       },
-    ).populate('user');
+    ).populate('user', '-_id -__v -passwordHash -email');
   } catch (error) {
     console.log(error);
     throw Error('Error while getting post');
@@ -105,28 +105,15 @@ export const updatePost = async (data) => {
 };
 export const getAllTags = async () => {
   try {
-    const posts = await PostModel.find().limit(10);
+    const posts = await PostModel.find().sort({ createdAt: -1 }).limit(10);
     return unique(
       posts
-        .map((obj) => obj.tags.reverse())
-        .reverse()
+        .map((obj) => obj.tags)
         .flat()
         .slice(0, 10),
     );
   } catch (error) {
     console.log(error);
     throw Error('Error while getting tags');
-  }
-};
-
-export const getSpecificPosts = async (data) => {
-  const { tag } = data.params;
-  try {
-    return (await PostModel.find().populate('user'))
-      .reverse()
-      .filter((obj) => obj.tags.includes(tag));
-  } catch (error) {
-    console.log(error);
-    throw Error('Error while getting all posts');
   }
 };

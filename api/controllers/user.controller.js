@@ -30,8 +30,8 @@ export const getMe = async (req, res) => {
 };
 export const updateUser = async (req, res) => {
   try {
-    const updatedUser = await UserService.updateUser(req.body);
-    res.status(200).json({ updatedUser });
+    await UserService.updateUser(req.body);
+    res.status(200).json({ message: 'Updated.' });
   } catch (error) {
     res.status(400).json({ message: error.message, params: error.cause });
   }
